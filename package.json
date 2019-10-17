@@ -1,7 +1,7 @@
 {
-  "name": "mai2",
+  "name": "mai",
   "version": "1.0.0",
-  "description": "Serverless webpack example using Typescript",
+  "description": "MeetingAI: making assistants great again",
   "main": "handler.js",
   "scripts": {
     "test": "jest"
