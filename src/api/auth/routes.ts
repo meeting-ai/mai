@@ -136,7 +136,7 @@ router.post('/callback', passport.authenticate('azuread-openidconnect',
     failureFlash: true
   }),
   (_req, res) => {
-    res.redirect('/');
+    res.redirect('/auth/success');
   }
 );
 
