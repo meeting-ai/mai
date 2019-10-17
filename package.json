@@ -1,22 +1,49 @@
 {
-  "name": "mai2",
+  "name": "mai",
   "version": "1.0.0",
-  "description": "Serverless webpack example using Typescript",
+  "description": "MeetingAI: making assistants great again",
   "main": "handler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "dependencies": {
     "source-map-support": "^0.5.10"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
+    "@types/jest": "^24.0.19",
     "@types/node": "^10.12.18",
+    "jest": "^24.9.0",
     "serverless-offline": "^5.12.0",
     "serverless-webpack": "^5.2.0",
+    "ts-jest": "^24.1.0",
     "ts-loader": "^5.3.3",
     "typescript": "^3.2.4",
     "webpack": "^4.29.0"
+  },
+  "jest": {
+    "modulePathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/dist/"
+    ],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "setupFiles": [
+      "./test/jest.env.ts"
+    ],
+    "testRegex": "test/(.*)spec.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
+    "reporters": [
+      "default"
+    ]
   },
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
   "license": "MIT"
