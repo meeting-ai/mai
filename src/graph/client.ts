@@ -1,4 +1,22 @@
-import rp from "request-promise";
+import { Client } from "@microsoft/microsoft-graph-client";
+import { MaiGraphAuth } from "./auth";
+import {
+  buildQuery,
+  currentTimeSlot,
+  IUser,
+  IUpcomingEventsOptions,
+  IFindMeetingOptions,
+  defaultLocationConstraint,
+  IScheduleMeetingOptions
+} from "./shared";
+import {
+  BoolString,
+  DateTime,
+  IAttendee,
+  IDateTimeTimeZone,
+  ILocation,
+  IMeetingTimeSlot
+} from "./types/base";
 import {
   IFindMeetingRequest,
   IFindMeetingResponse
@@ -8,22 +26,12 @@ import {
   IScheduleMeetingResponse
 } from "./types/schedule-meeting";
 import {
-  IUser,
-  buildRequest,
-  defaultLocationConstraint,
-  currentTimeSlot,
-  IUpcomingEventsOptions,
-  IFindMeetingOptions,
-  IScheduleMeetingOptions
-} from "./shared";
-import {
-  IUpcomingEventsResponse,
-  IUpcomingEventsRequest
+  IUpcomingEventsRequest,
+  IUpcomingEventsResponse
 } from "./types/upcoming-events";
 
-export class GraphHttpService {
-  private readonly host = "https://graph.microsoft.com";
-  private readonly me = "v1.0/me";
+export class GraphClientService {
+  private readonly me = "v1.0/me/";
 
   public constructor() {}
 
@@ -31,23 +39,22 @@ export class GraphHttpService {
     user: IUser,
     options: IUpcomingEventsOptions
   ): Promise<IUpcomingEventsResponse> {
-    const host = user.host || this.host;
-    const endpoint = `${host}/${this.me}/calendarview`;
+    const endpoint = `${this.me}/calendarview`;
     const query: IUpcomingEventsRequest = {
       startdatetime: options.start,
       enddatetime: options.end
     };
-    const { url, ro } = buildRequest(user, endpoint, { query });
-    const response = await rp.get(url, ro);
-    return response;
+
+    return client(user)
+      .api(endpoint + buildQuery({ query }))
+      .get();
   }
 
   public async findMeeting(
     user: IUser,
     options: IFindMeetingOptions
   ): Promise<IFindMeetingResponse> {
-    const host = user.host || this.host;
-    const endpoint = `${host}/${this.me}/findMeetingTimes`;
+    const endpoint = `${this.me}/findMeetingTimes`;
     const body: IFindMeetingRequest = {
       attendees: options.attendees || [],
       locationConstraint: {
@@ -60,26 +67,27 @@ export class GraphHttpService {
         timeslots: options.timeSlots || [currentTimeSlot()]
       }
     };
-
-    const { url, ro } = buildRequest(user, endpoint, { body });
-
-    const response: IFindMeetingResponse = await rp.post(url, ro);
-
-    return response;
+    return client(user)
+      .api(endpoint)
+      .post(body);
   }
 
   public async scheduleMeeting(
     user: IUser,
     options: IScheduleMeetingOptions
   ): Promise<IScheduleMeetingResponse> {
-    const host = user.host || this.host;
-    const endpoint = `${host}/${this.me}/events`;
+    const endpoint = `${this.me}/events`;
     const body: IScheduleMeetingRequest = options;
 
-    const { url, ro } = buildRequest(user, endpoint, { body });
-
-    const response: IScheduleMeetingResponse = await rp.post(url, ro);
-
-    return response;
+    return client(user)
+      .api(endpoint)
+      .post(body);
   }
+}
+
+function client(user: IUser): Client {
+  return Client.initWithMiddleware({
+    baseUrl: this.host,
+    authProvider: new MaiGraphAuth(user.token)
+  });
 }
