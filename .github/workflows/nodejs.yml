@@ -26,10 +26,10 @@ jobs:
       - name: install and configure serverless
         run: |
           npm i -g serverless
-          sls config credentials --provider aws --key ${AWS_SECRET_KEY} --secret ${AWS_SECRET_TOKEN} --overwrite
-      # - name: deploy
-      #   run: |
-      #     sls deploy
+      #     sls config credentials --provider aws --key ${AWS_SECRET_KEY} --secret ${AWS_SECRET_TOKEN} --overwrite
       #   env:
       #     AWS_SECRET_KEY: ${secret.AWS_SECRET_KEY}
       #     AWS_SECRET_TOKEN: ${secret.AWS_SECRET_TOKEN}
+      # - name: deploy
+      #   run: |
+      #     sls deploy
