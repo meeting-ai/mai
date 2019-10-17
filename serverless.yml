@@ -1,8 +1,8 @@
-service:
-  name: mai2
-# app and org for use with dashboard.serverless.com
 app: mai
 org: beemer
+
+service:
+  name: mai
 
 # Add the serverless-webpack plugin
 plugins:
