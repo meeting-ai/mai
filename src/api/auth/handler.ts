@@ -7,6 +7,7 @@ import { OIDCStrategy } from 'passport-azure-ad';
 import cookieParser from 'cookie-parser';
 import { createServer, proxy } from 'aws-serverless-express';
 import flash from 'connect-flash';
+import { SUCCESS_PAGE } from './success';
 
 dotenv.config();
 
@@ -154,7 +155,14 @@ router.get('/signout', (req: Request, res) => {
   }
 });
 
+router.get('/success', (req: Request, res) => {
+  console.log('success');
+  res.set('Content-Type', 'text/html');
+  res.send(SUCCESS_PAGE);
+});
+
 app.use('/auth', router);
+
 
 const server = createServer(app)
 
