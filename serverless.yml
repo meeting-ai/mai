@@ -17,7 +17,7 @@ functions:
   slash:
     handler: src/handler.slash
     environment:
-      SLACK_TOKEN: ${param:<variable-key>}
+      SLACK_TOKEN: ${param:SLACK_TOKEN}
     events:
       - http:
           method: post
