@@ -20,7 +20,7 @@ import {
   IUpcomingEventsRequest
 } from "./types/upcoming-events";
 
-export class GraphService {
+export class GraphHttpService {
   private readonly host = "https://graph.microsoft.com";
   private readonly me = "v1.0/me/";
 
