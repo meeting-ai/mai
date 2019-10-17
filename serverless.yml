@@ -14,15 +14,18 @@ provider:
   runtime: nodejs10.x
 
 functions:
-  hello:
-    handler: src/handler.hello
+  slash:
+    handler: src/handler.slash
+    environment:
+      SLACK_TOKEN: ${param:<variable-key>}
     events:
       - http:
-          method: get
-          path: hello
+          method: post
+          path: slash
   ask:
     handler: src/handler.ask
     events:
       - http:
           method: get
           path: ask
+

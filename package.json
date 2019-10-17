@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "node-nlp": "^3.10.0",
+    "@slack/web-api": "^5.2.1",
     "source-map-support": "^0.5.10"
   },
   "devDependencies": {
