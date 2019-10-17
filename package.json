@@ -4,7 +4,8 @@
   "description": "MeetingAI: making assistants great again",
   "main": "handler.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "sls offline  --skipCacheInvalidation"
   },
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^1.7.0",
@@ -20,6 +21,7 @@
     "node-nlp": "^3.10.0",
     "passport-azure-ad": "^4.1.0",
     "request-promise": "^4.2.4",
+    "save": "^2.4.0",
     "simple-oauth2": "^2.4.0",
     "source-map-support": "^0.5.10"
   },
@@ -29,6 +31,7 @@
     "@types/body-parser": "^1.17.1",
     "@types/connect-flash": "0.0.35",
     "@types/cookie-parser": "^1.4.2",
+    "@types/date-fns": "^2.6.0",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^4.17.1",
     "@types/express-session": "^1.15.15",
