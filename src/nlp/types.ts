@@ -1,20 +1,20 @@
-type EN = "en";
-type Locale = EN;
+export type EN = "en";
+export type Locale = EN;
 
-type English = "English";
-type Language = English;
+export type English = "English";
+export type Language = English;
 
-type DefaultDomain = "default";
-type Domain = DefaultDomain;
+export type DefaultDomain = "default";
+export type Domain = DefaultDomain;
 
-interface IClassification {
+export interface IClassification {
   label: string;
   value: number;
 }
 
-type NonNegative = number; // >= 0
+export type NonNegative = number; // >= 0
 
-interface IEntity {
+export interface IEntity {
   start: NonNegative;
   end: NonNegative;
   len: NonNegative;
@@ -25,11 +25,11 @@ interface IEntity {
   utteranceText: string;
 }
 
-interface ITrainedEntity extends IEntity {
+export interface ITrainedEntity extends IEntity {
   levenshtein: number;
 }
 
-interface IUnitEntity extends IEntity {
+export interface IUnitEntity extends IEntity {
   resolution: {
     strValue: string;
     value: number;
@@ -38,29 +38,29 @@ interface IUnitEntity extends IEntity {
   };
 }
 
-interface ITimeEntity extends IEntity {
+export interface ITimeEntity extends IEntity {
   entity: TimeType;
   values: ITimeValue[];
 }
 
-interface ITimeValue {
+export interface ITimeValue {
   timex: TimexString;
   type: TimeType;
   value: TimeString;
 }
 
-type NumberType = "number";
-type DimensionType = "dimension";
-type TimeType = "time";
-type DatetimeV2Type = "datetimeV2.time";
-type EntityType =
+export type NumberType = "number";
+export type DimensionType = "dimension";
+export type TimeType = "time";
+export type DatetimeV2Type = "datetimeV2.time";
+export type EntityType =
   | NumberType
   | DimensionType
   | TimeType
   | DatetimeV2Type
   | string;
 
-interface ISourceEntity {
+export interface ISourceEntity {
   start: NonNegative;
   end: NonNegative;
   resolution: ISourceResolution;
@@ -68,24 +68,24 @@ interface ISourceEntity {
   typeName: EntityType;
 }
 
-type Unit = string; // Picometer
-type SourceUnit = string; // Picometer
+export type Unit = string; // Picometer
+export type SourceUnit = string; // Picometer
 
-interface ISourceUnitResolution {
+export interface ISourceUnitResolution {
   value: string;
   unit: Unit;
   srcUnit: SourceUnit;
 }
 
-interface ISourceResolution {
+export interface ISourceResolution {
   value: string;
 }
 
-interface ISourceResolutions {
+export interface ISourceResolutions {
   values: ISourceResolution[];
 }
 
-interface ISourceDatetime {
+export interface ISourceDatetime {
   start: NonNegative;
   end: NonNegative;
   resolution: {
@@ -95,15 +95,15 @@ interface ISourceDatetime {
   typeName: DatetimeV2Type;
 }
 
-type TimeString = string; // HH:MM:SS
-type TimexString = string; // THH
-interface ISourceDatetimeResolution {
+export type TimeString = string; // HH:MM:SS
+export type TimexString = string; // THH
+export interface ISourceDatetimeResolution {
   timex: TimexString;
   type: TimeType;
   value: TimeString;
 }
 
-interface ISentiment {
+export interface ISentiment {
   score: number;
   comparative: number;
   vote: string;
@@ -113,7 +113,7 @@ interface ISentiment {
   language: Locale;
 }
 
-interface IProcessed {
+export interface IProcessed {
   response: {
     utterance: string;
     locale: Locale;
