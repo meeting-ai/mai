@@ -22,6 +22,14 @@ functions:
       - http:
           method: post
           path: slash
+  event:
+    handler: src/handler.event
+    environment:
+      SLACK_TOKEN: ${param:SLACK_TOKEN}
+    events:
+      - http:
+          method: post
+          path: event
   ask:
     handler: src/handler.ask
     events:
