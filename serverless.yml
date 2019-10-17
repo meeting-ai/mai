@@ -28,7 +28,6 @@ functions:
       - http:
           method: get
           path: ask
-            auth:
   auth:
     handler: src/api/auth/handler.handler
     events:
