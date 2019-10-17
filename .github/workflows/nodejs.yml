@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x]
+        node-version: [10.x]
 
     steps:
       - uses: actions/checkout@v1
@@ -27,9 +27,8 @@ jobs:
         run: |
           npm i -g serverless
           sls config credentials --provider aws --key ${AWS_SECRET_KEY} --secret ${AWS_SECRET_TOKEN} --overwrite
-      - name: prestart and deploy
+      - name: deploy
         run: |
-          npm run prestart:prod
           sls deploy
         env:
           AWS_SECRET_KEY: ${secret.AWS_SECRET_KEY}
