@@ -45,7 +45,7 @@ function buildDate(date: IDate) {
     },
     accessory: {
       type: "datepicker",
-      initial_date: date || "1990-04-28",
+      initial_date: `${date.year}-${date.month}-${date.day}` || "1990-04-28",
       placeholder: {
         type: "plain_text",
         text: "Pick date",
@@ -55,7 +55,7 @@ function buildDate(date: IDate) {
   };
 }
 
-function buildTime(time: ITime) {
+function buildTime(times: ITime[]) {
   return {
     type: "section",
     text: {
@@ -67,23 +67,39 @@ function buildTime(time: ITime) {
       placeholder: {
         type: "plain_text",
         text: "Pick time",
-        emoji: true
+        emoji: false
       },
-      options: [
-        {
+      options: times.map((t, i) => {
+        const time = `${t.hour}:${t.minute}:${t.second}`;
+        return {
           text: {
             type: "plain_text",
-            text: "Choice 1",
-            emoji: true
+            text: time,
+            emoji: false
           },
-          value: "value-0"
-        }
-      ]
+          value: time
+        };
+      })
     }
   };
 }
 
 function buildDuration(selected?: Duration) {
+  const unmapped = durations.filter(d => d !== selected);
+
+  if (selected !== undefined) {
+    unmapped.unshift(selected!);
+  }
+
+  const options = unmapped.map((d, i) => ({
+    text: {
+      type: "plain_text",
+      text: `${d}`,
+      emoji: true
+    },
+    value: `${d}`
+  }));
+
   return {
     type: "section",
     text: {
@@ -97,16 +113,7 @@ function buildDuration(selected?: Duration) {
         text: "Pick duration",
         emoji: true
       },
-      options: [
-        {
-          text: {
-            type: "plain_text",
-            text: "My events",
-            emoji: true
-          },
-          value: "value-0"
-        }
-      ]
+      options
     }
   };
 }
@@ -125,21 +132,19 @@ function buildRoom(rooms: IRoom[]) {
         text: "Pick location",
         emoji: true
       },
-      options: [
-        {
-          text: {
-            type: "plain_text",
-            text: "My events",
-            emoji: true
-          },
-          value: "value-0"
-        }
-      ]
+      options: rooms.map(r => ({
+        text: {
+          type: "plain_text",
+          text: r.name,
+          emoji: true
+        },
+        value: r.id
+      }))
     }
   };
 }
 
-function buildNote(note: INote) {
+function buildNote(note?: INote) {
   return {
     type: "input",
     element: {
@@ -158,7 +163,7 @@ export function buildSchedule(x: IUserMeetingInfo) {
     divider(),
     buildAttendees(x.attendees),
     buildDate(x.date),
-    buildTime(x.time),
+    buildTime(x.times),
     buildDuration(x.duration),
     buildRoom(x.rooms),
     divider(),
@@ -166,14 +171,14 @@ export function buildSchedule(x: IUserMeetingInfo) {
   ];
 }
 
-interface IUserMeetingInfo {
+export interface IUserMeetingInfo {
   user: IUser;
   attendees: IUser[];
   date: IDate;
-  time: ITime;
+  times: ITime[];
   duration: Duration;
   rooms: IRoom[];
-  note: INote;
+  note?: INote;
 }
 
 interface IUser {

@@ -2,8 +2,7 @@ import dotenv from 'dotenv';
 import express, { Response, Request } from 'express';
 import passport from 'passport'
 import session from 'express-session';
-import { create } from 'simple-oauth2';
-import { OIDCStrategy } from 'passport-azure-ad';
+import { OIDCStrategy, VerifyCallback, IProfile } from 'passport-azure-ad';
 import cookieParser from 'cookie-parser';
 import { createServer, proxy } from 'aws-serverless-express';
 import flash from 'connect-flash';
@@ -12,7 +11,7 @@ import { SUCCESS_PAGE } from './success';
 dotenv.config();
 
 // Configure simple-oauth2
-const oauth2 = create({
+const oauth2 = require('simple-oauth2').create({
   client: {
     id: process.env.OAUTH_APP_ID as string,
     secret: process.env.OAUTH_APP_PASSWORD as string,
@@ -45,7 +44,9 @@ passport.deserializeUser(function(id: string, done) {
 
 // Callback function called once the sign-in is complete
 // and an access token has been obtained
-async function signInComplete(_iss: any, _sub: any, profile: any, _accessToken: any, _refreshToken: any, params: any, done: any) {
+// (iss, sub, profile, accessToken, refreshToken, params, done)
+async function signInComplete(_req: Request, _iss: string, _sub: string, profile: IProfile, _access_token: string, _refresh_token: string, params: any, done: VerifyCallback) {
+
   if (!profile.oid) {
     return done(new Error("No OID found in user profile."), null);
   }
@@ -60,6 +61,9 @@ async function signInComplete(_iss: any, _sub: any, profile: any, _accessToken: 
   // } catch (err) {
   //   done(err, null);
   // }
+
+  // remove the param b/c it bugs out in date-fns.
+  delete params.expires_in;
 
   // Create a simple-oauth2 token from raw tokens
   let oauthToken = oauth2.accessToken.create(params);
@@ -88,12 +92,6 @@ passport.use(new OIDCStrategy(
 
 var app = express();
 
-// app.use(eventContext());
-
-
-// Session middleware
-// NOTE: Uses default in-memory session store, which is not
-// suitable for production
 app.use(session({
   secret: 'your_secret_value_here',
   resave: false,
@@ -107,46 +105,42 @@ app.use(flash());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.get('/test', (_req: Request, res: Response) => {
-  res.json({});
-});
-app.get('/fail', (_req: Request, res: Response) => {
-  res.send('you failed.');
-});
+// Initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 const router = express.Router();
 
-/* GET auth callback. */
-router.get('/signin', (req, res: Response, next) => {
-  passport.authenticate('azuread-openidconnect',
-    {
-      response: res,
-      prompt: 'login',
-      failureRedirect: '/fail',
-      failureFlash: true
-    } as any
-  )(req,res,next);
-}, (_req, res) => {
-  console.log('redirect');
-  res.redirect('/');
+router.get('/test', (_req: Request, res: Response) => {
+  res.json({});
+});
+router.get('/fail', (_req: Request, res: Response) => {
+  res.send('you failed.');
 });
 
-router.post('/callback', (req, res, next) => {
-  console.log('post');
-  passport.authenticate('azuread-openidconnect',
-    {
-      response: res,
-      failureRedirect: '/fail',
-      failureFlash: true
-    } as any
-  )(req,res,next);
-}, (_req, res) => {
-  console.log('callback');
-  res.redirect('/');
-});
+/* GET auth callback. */
+router.get('/signin', passport.authenticate('azuread-openidconnect',
+  {
+    prompt: 'login',
+    failureRedirect: '/auth/fail'
+  }),
+  (_req, res) => {
+    res.redirect('/');
+  }
+);
+
+router.post('/callback', passport.authenticate('azuread-openidconnect',
+  {
+    failureRedirect: '/auth/fail',
+    failureFlash: true
+  }),
+  (_req, res) => {
+    res.redirect('/');
+  }
+);
 
 router.get('/signout', (req: Request, res) => {
-  console.log('signout');
   if (req.session) {
     req.session.destroy((_err) => {
       req.logout();
@@ -166,8 +160,6 @@ app.use('/auth', router);
 
 const server = createServer(app)
 
-
 export const handler = (event, context) => { 
-  console.log(event);
   proxy(server, event, context)
 };
