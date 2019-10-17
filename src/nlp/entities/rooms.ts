@@ -1,5 +1,16 @@
 import { EN } from "../util/constants";
 
+// Room_Smalls:
+// Room_Majestic:
+// Room_Fox:
+// Room_Shelter:
+// Room_Joe:
+// Room_Roller_Rink:
+// Room_Outer_Rink:
+// Room_Gem:
+// Room_212_Room:
+// Room_Filmore:
+
 const roomId = "room";
 const roomDefinitions: IEntityDefinition[] = [
   {
@@ -89,6 +100,31 @@ const roomDefinitions: IEntityDefinition[] = [
       "the gem",
       "the gem room"
     ]
+  },
+  {
+    id: "Room_212_Room",
+    synonyms: [
+      "212 Room",
+      "the 212 Room",
+      "the 212 Room room",
+      "212 room",
+      "the 212 room",
+      "the 212 room room",
+      "the 212",
+      "212",
+      "212 degree room"
+    ]
+  },
+  {
+    id: "Room_Filmore",
+    synonyms: [
+      "Filmore",
+      "the Filmore",
+      "the Filmore room",
+      "filmore",
+      "the filmore",
+      "the filmore room"
+    ]
   }
 ];
 
@@ -96,11 +132,13 @@ function defToEntity(id: string): (IEntityDefinition) => EntityArguments {
   return (room: IEntityDefinition) => [id, room.id, [EN], room.synonyms];
 }
 
-export const rooms = roomDefinitions.map(defToEntity(roomId));
+const rooms = roomDefinitions.map(defToEntity(roomId));
 
-export interface IEntityDefinition {
+interface IEntityDefinition {
   id: string;
   synonyms: string[];
 }
 
-export type EntityArguments = [string, string, string[], string[]];
+type EntityArguments = [string, string, string[], string[]];
+
+export { roomId, rooms, IEntityDefinition, EntityArguments };

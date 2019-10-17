@@ -1,7 +1,10 @@
-import { NerManager } from "node-nlp";
+import { NerManager, NlpManager } from "node-nlp";
 import { rooms } from "./rooms";
 
-const entityManager = new NerManager({ threshold: 0.8 });
-rooms.forEach(room => entityManager.addNamedEntityText(...room));
+function loadEntities(manager: NlpManager) {
+  rooms.forEach(room => manager.addNamedEntityText(...room));
+}
 
-export { entityManager };
+const entityManager = new NerManager({ threshold: 0.8 });
+
+export { entityManager, loadEntities };
