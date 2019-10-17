@@ -1,15 +1,23 @@
 import { APIGatewayProxyHandler } from "aws-lambda";
 import "source-map-support/register";
 import { process } from "./nlp";
+// import { WebClient } from "@slack/web-api";
 
-export const hello: APIGatewayProxyHandler = async (event, _context) => {
+export const slash: APIGatewayProxyHandler = async (event, _context) => {
+  console.log(JSON.stringify(event, null, 2));
   return {
     statusCode: 200,
+    headers: {
+      'content-type': 'application/json',
+    },
     body: JSON.stringify(
       {
-        message:
-          "Go Serverless Webpack (Typescript) v1.0! Your function executed successfully!",
-        input: event
+        "text": "It's 80 degrees right now.",
+        "attachments": [
+          {
+            "text": "Partly cloudy today and tomorrow"
+          }
+        ]
       },
       null,
       2
