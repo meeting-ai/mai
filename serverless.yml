@@ -37,7 +37,7 @@ functions:
           method: get
           path: ask
   auth:
-    handler: src/api/auth/handler.handler
+    handler: src/api/auth/routes.handler
     events:
       - http:
           method: ANY
